@@ -27,9 +27,7 @@ function Product(props: ProductProps) {
         <h6 className="category">{getCategoryName(category)}</h6>
       </div>
       <div className="card-footer text-muted">
-        <time dateTime={time.toISOString()}>
-          {time.fromNow()}
-        </time>
+        <time dateTime={time.toISOString()}>{time.fromNow()}</time>
       </div>
     </div>
   );

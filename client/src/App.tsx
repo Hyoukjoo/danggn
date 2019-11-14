@@ -29,7 +29,7 @@ export default class App extends Component {
           <PrivateRoute
             path={`${PAGE_PATHS.PRODUCT}/:id`}
             redirectTo={PAGE_PATHS.SIGNIN}
-            component={ProductDetail}
+            component={ProductDetail} 
           />
           <PrivateRoute
             path={PAGE_PATHS.PRODUCT_LISTS}

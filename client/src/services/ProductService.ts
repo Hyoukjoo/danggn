@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { ApiResponse } from '~services/types';
 import AuthStore from '~stores/auth/AuthStore';
+import { config } from 'dotenv';
+
+config();
 
 export type ProductRegistrationDto = {
   userId?: string;
@@ -9,7 +12,7 @@ export type ProductRegistrationDto = {
   title: string;
   description: string;
   price: number;
-}
+};
 
 export type ProductDto = {
   id: number;
@@ -21,16 +24,16 @@ export type ProductDto = {
   price: number;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 const API_HOST = process.env.API_HOST || 'http://localhost:5000/api';
 
 class ProductService {
+  constructor(private authStore: AuthStore) {}
 
-  constructor(private authStore: AuthStore) {
-  }
-
-  async registration(body: ProductRegistrationDto): Promise<ApiResponse<ProductDto>> {
+  async registration(
+    body: ProductRegistrationDto,
+  ): Promise<ApiResponse<ProductDto>> {
     if (this.authStore.auth == null) {
       throw new Error('need to login!');
     }
@@ -42,9 +45,13 @@ class ProductService {
     formData.append('description', body.description);
     formData.append('price', String(body.price));
 
-    return axios.post<ProductRegistrationDto, ApiResponse<ProductDto>>(`${API_HOST}/products`, formData, {
-      headers: {'Content-Type': 'multipart/form-data' }
-    });
+    return axios.post<ProductRegistrationDto, ApiResponse<ProductDto>>(
+      `${API_HOST}/products`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
   }
 
   async getAll(): Promise<ApiResponse<ProductDto[]>> {
@@ -54,7 +61,6 @@ class ProductService {
   async getById(id: string): Promise<ApiResponse<ProductDto>> {
     return axios.get(`${API_HOST}/products/${id}`);
   }
-
 }
 
 export default ProductService;

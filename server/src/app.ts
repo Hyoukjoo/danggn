@@ -10,8 +10,11 @@ import logger from './logger';
 import User from './models/User';
 import Product from './models/Product';
 
-
-const stopServer = async (server: http.Server, sequelize: Sequelize, signal?: string) => {
+const stopServer = async (
+  server: http.Server,
+  sequelize: Sequelize,
+  signal?: string,
+) => {
   logger.info(`Stopping server with signal: ${signal}`);
   await server.close();
   await sequelize.close();
@@ -28,8 +31,8 @@ async function runServer() {
   app.use('/api/auth', authRouter);
   app.use('/api/products', productRouter);
   app.get('/uploads/:fileName', (req, res) => {
-    const fileName = req.params.fileName
-    console.log(fileName)
+    const fileName = req.params.fileName;
+    console.log(fileName);
     res.sendFile(path.join(__dirname, `../uploads/${fileName}`));
   });
   app.get('*', (req, res) => {
@@ -43,19 +46,19 @@ async function runServer() {
   try {
     await sequelize.authenticate();
     await sequelize.sync({
-      force: true
+      force: false,
     });
-    const user = await User.create({
-      email: 'test@test.com',
-      password: 'test123'
-    });
-    Product.create({
-      userId: user.id,
-      category: 0,
-      title: 'TEST Product',
-      price: 1000,
-      image: '/uploads/sample-product.jpeg'
-    })
+    // const user = await User.create({
+    //   email: 'test@test.com',
+    //   password: 'test123',
+    // });
+    // Product.create({
+    //   userId: user.id,
+    //   category: 0,
+    //   title: 'TEST Product',
+    //   price: 1000,
+    //   image: '/uploads/sample-product.jpeg',
+    // });
   } catch (e) {
     stopServer(server, sequelize);
     throw e;
@@ -69,4 +72,3 @@ runServer()
   .catch((ex: Error) => {
     logger.error('Unable run:', ex);
   });
-

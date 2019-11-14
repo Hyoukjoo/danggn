@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { ApiResponse } from '~services/types';
+import { config } from 'dotenv'
+
+config();
 
 export type LoginResponseDto = {
   token: string;
