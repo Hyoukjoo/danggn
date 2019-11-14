@@ -1,6 +1,8 @@
 import * as express from 'express';
-import Product from '../models/Product';
 import * as multer from 'multer';
+
+import Product from '../models/Product';
+import insertOption from '../utils/insertOption';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -26,13 +28,24 @@ router.get('/:id', upload.single('image'), async (req, res) => {
 router.post('', upload.single('image'), async (req, res) => {
   const image = req.file;
   const product = req.body;
+  const { userId, category, price, title, description, option } = product;
 
   try {
     const insertedProduct = await Product.create({
-      ...product,
+      userId,
+      category,
+      price,
+      title,
+      description,
       image: `/${image.path}`,
     });
-    return res.json({ data: insertedProduct, msg: '상품등록에 성공하였습니다.' });
+
+    if (option) await insertOption(insertedProduct.id, product);
+
+    return res.json({
+      data: insertedProduct,
+      msg: '상품등록에 성공하였습니다.',
+    });
   } catch (e) {
     return res.status(500).json({ msg: e.message });
   }

@@ -1,8 +1,10 @@
-import { Model } from 'sequelize';
+import { Model, Association } from 'sequelize';
+import CarOption from './CarOption';
+import RealEstateOption from './RealEstateOption';
 
 export default class Product extends Model {
   public id!: number;
-  public userId!: string;
+  public userId!: number;
   public category!: number;
   public title!: string;
   public description!: string;
@@ -11,4 +13,9 @@ export default class Product extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public static associations: {
+    carOptions: Association<Product, CarOption>;
+    realEstateOptions: Association<Product, RealEstateOption>;
+  };
 }

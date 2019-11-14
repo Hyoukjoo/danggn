@@ -1,16 +1,13 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { I_Detail_props } from '..';
+import { I_Option_props } from '..';
 
-
-
-const CarDetail: React.FC<I_Detail_props> = ({detail, setDetail}) => {
+const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
   const [old, setOld] = useState();
   const [mileage, setMileage] = useState();
   const [isSmoker, setIsSmoker] = useState();
 
   const onOldChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setOld(event.target.value ? parseInt(event.target.value, 10) : undefined);
-    setDetail({...detail, })
   };
 
   const onMileageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -19,9 +16,7 @@ const CarDetail: React.FC<I_Detail_props> = ({detail, setDetail}) => {
     );
   };
 
-  const onSmokerChange = (
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>,
-  ) => {
+  const onSmokerChange = (    event: React.MouseEvent<HTMLInputElement, MouseEvent>,  ) => {
     setIsSmoker(
       event.currentTarget.value
         ? event.currentTarget.value === 'true'
@@ -29,7 +24,11 @@ const CarDetail: React.FC<I_Detail_props> = ({detail, setDetail}) => {
     );
   };
 
-  useEffect(()=>setDetail({...detail, old, mileage, isSmoker}), [old, mileage, isSmoker])
+  useEffect(() => setOption({ old, mileage, isSmoker }), [
+    old,
+    mileage,
+    isSmoker,
+  ]);
 
   return (
     <>
@@ -98,4 +97,4 @@ const CarDetail: React.FC<I_Detail_props> = ({detail, setDetail}) => {
   );
 };
 
-export default CarDetail;
+export default CarOption;

@@ -27,6 +27,7 @@ class ProductsStore {
   async registrationProduct(product: ProductRegistrationDto) {
     try {
       const result = await this.productService.registration(product);
+      console.log(result);
       alert(result.data.msg);
     } catch (e) {
       alert(e.response.data.msg);

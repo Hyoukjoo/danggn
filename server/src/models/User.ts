@@ -1,6 +1,7 @@
 import { Model, HasManyGetAssociationsMixin, HasManyAddAssociationMixin, Association } from 'sequelize';
-import Product from './Product';
 import * as bcrypt from 'bcrypt-nodejs';
+
+import Product from './Product';
 
 export default class User extends Model {
   public id!: number;

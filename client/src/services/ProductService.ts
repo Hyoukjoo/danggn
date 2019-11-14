@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ApiResponse } from '~services/types';
 import AuthStore from '~stores/auth/AuthStore';
 import { config } from 'dotenv';
+import { getCategoryName } from '~pages/utils';
 
 config();
 
@@ -12,6 +13,7 @@ export type ProductRegistrationDto = {
   title: string;
   description: string;
   price: number;
+  option?: T_Option;
 };
 
 export type ProductDto = {
@@ -22,9 +24,24 @@ export type ProductDto = {
   category: number;
   description: string;
   price: number;
+  option?: T_Option;
   createdAt: string;
   updatedAt: string;
 };
+
+export type T_Option = null | Car | RealEstate;
+
+interface Car {
+  old: number;
+  mileage: number;
+  isSmoker: boolean;
+}
+
+interface RealEstate {
+  address: string;
+  floor: number;
+  size: number;
+}
 
 const API_HOST = process.env.API_HOST || 'http://localhost:5000/api';
 
@@ -44,6 +61,13 @@ class ProductService {
     formData.append('title', body.title);
     formData.append('description', body.description);
     formData.append('price', String(body.price));
+    if (body.option) {
+      const { option } = body;
+      formData.append('option', getCategoryName(body.category));
+      for (let key in option) {
+        formData.append(key, String(option[key]));
+      }
+    }
 
     return axios.post<ProductRegistrationDto, ApiResponse<ProductDto>>(
       `${API_HOST}/products`,
