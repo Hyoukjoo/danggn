@@ -85,6 +85,10 @@ class ProductService {
   async getById(id: string): Promise<ApiResponse<ProductDto>> {
     return axios.get(`${API_HOST}/products/${id}`);
   }
+
+  async getByCategory(category: number): Promise<ApiResponse<ProductDto[]>> {
+    return axios.get(`${API_HOST}/products/category/${category}`)
+  }
 }
 
 export default ProductService;

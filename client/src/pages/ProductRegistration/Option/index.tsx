@@ -10,7 +10,7 @@ export interface I_Option_props {
 const Option: React.FC<I_Option_props> = ({ category, setOption }) => {
   const categorySwitchRender = useCallback(() => {
     switch (category) {
-      case 0:
+      case 1:
         return <CarOption setOption={setOption} />;
       default:
         return null;

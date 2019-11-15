@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { STORES } from '~constants';
@@ -8,17 +8,22 @@ import { T_Option } from '~services/ProductService';
 import Option from './Option';
 import BackTopBar from '~components/BackTopBar';
 import Footer from '~components/Footer';
+import { RouteComponentProps } from 'react-router';
+
+type RegisterProps = InjectedProps & RouteComponentProps<{ category?: string }>;
 
 interface InjectedProps {
   [STORES.PRODUCTS_STORE]: ProductsStore;
 }
 
-const ProductRegistration = inject(STORES.PRODUCTS_STORE)(
-  observer((props: InjectedProps) => {
+const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STORE)(
+  observer(props => {
+    const defaultCategory = props.match.params.category ? parseInt(props.match.params.category, 10) : undefined;
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState(0);
-    const [category, setCategory] = useState();
+    const [category, setCategory] = useState(defaultCategory);
     const [fileName, setFileName] = useState('파일선택');
     const [image, setImage] = useState();
     const [option, setOption] = useState(null as T_Option);
@@ -39,11 +44,20 @@ const ProductRegistration = inject(STORES.PRODUCTS_STORE)(
       event.preventDefault();
       event.stopPropagation();
 
+      if (!image) return alert('제품 사진을 등록해 주세요');
+      if (!title.trim()) return alert('제품 이름을 입력해주세요');
+      if (!category) return alert('카테고리를 선택해 주세요');
+      if (!description.trim()) return alert('제품 설명을 입력해주세요');
+      if (option)
+        for (let key in option) {
+          if (!option[key]) return alert(`추가 항목을 모두 입력해주세요`);
+        }
+
       const product = option
         ? { title, description, category, image, price, option: { ...option } }
         : { title, description, category, image, price };
 
-      console.log(product);
+      if (price === 0 && !confirm('제품 가격이 0원이 맞습니까?')) return;
 
       await props.productsStore.registrationProduct(product);
     };
@@ -70,16 +84,22 @@ const ProductRegistration = inject(STORES.PRODUCTS_STORE)(
                 id="productsTitle"
                 placeholder="제품 이름을 입력해주세요."
                 value={title}
-                onChange={v => setTitle(v.target.value)}
+                onChange={v => setTitle(v.target.value.trim())}
               />
             </div>
             <div className="form-group form-category">
-              <select id="productsCategory" className="form-control" value={category} onChange={onCategoryChange}>
+              <select
+                id="productsCategory"
+                className="form-control"
+                value={category}
+                onChange={onCategoryChange}
+                defaultValue={defaultCategory}
+              >
                 <option value={undefined}>카테고리를 선택해주세요.</option>
-                <option value={0}>차량</option>
-                <option value={1}>가구/인테리어</option>
-                <option value={2}>유아동/유아도서</option>
-                <option value={3}>생활/가공식품</option>
+                <option value={1}>차량</option>
+                <option value={2}>가구/인테리어</option>
+                <option value={3}>유아동/유아도서</option>
+                <option value={4}>생활/가공식품</option>
               </select>
             </div>
             <div className="form-group form-price">

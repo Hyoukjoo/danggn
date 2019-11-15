@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import Login from './pages/Signin';
 import PrivateRoute from './components/PrivateRouter';
 import { inject, observer } from 'mobx-react';
@@ -14,7 +9,7 @@ import ProductList from '~pages/ProductList';
 import Singup from '~pages/Signup';
 import ProductRegistration from '~pages/ProductRegistration';
 import ProductDetail from '~pages/ProductDetail';
-import CarProductList from '~pages/CarProductList';
+import ListByCategory from '~pages/ListByCategory';
 
 @inject(STORES.AUTH_STORE)
 @observer
@@ -26,15 +21,12 @@ export default class App extends Component {
         <Switch>
           <Route path={PAGE_PATHS.SIGNIN} component={Login} />
           <Route path={PAGE_PATHS.SIGNUP} component={Singup} />
+          <PrivateRoute path={`${PAGE_PATHS.PRODUCT}/:id`} redirectTo={PAGE_PATHS.SIGNIN} component={ProductDetail} />
+          <PrivateRoute path={PAGE_PATHS.PRODUCT_LISTS} redirectTo={PAGE_PATHS.SIGNIN} component={ProductList} />
           <PrivateRoute
-            path={`${PAGE_PATHS.PRODUCT}/:id`}
+            path={`${PAGE_PATHS.PRODUCT_REGISTRATION}/:category`}
             redirectTo={PAGE_PATHS.SIGNIN}
-            component={ProductDetail} 
-          />
-          <PrivateRoute
-            path={PAGE_PATHS.PRODUCT_LISTS}
-            redirectTo={PAGE_PATHS.SIGNIN}
-            component={ProductList}
+            component={ProductRegistration}
           />
           <PrivateRoute
             path={PAGE_PATHS.PRODUCT_REGISTRATION}
@@ -42,9 +34,9 @@ export default class App extends Component {
             component={ProductRegistration}
           />
           <PrivateRoute
-            path={PAGE_PATHS.PRODUCT_CAR_CATEGORY_LISTS}
+            path={`${PAGE_PATHS.PRODUCT_CATEGORY}/:category`}
             redirectTo={PAGE_PATHS.SIGNIN}
-            component={CarProductList}
+            component={ListByCategory}
           />
           <Redirect from="/" to={PAGE_PATHS.PRODUCT_LISTS} />
         </Switch>

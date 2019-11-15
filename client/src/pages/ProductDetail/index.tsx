@@ -26,11 +26,7 @@ function ProductDetail(props: ProductDetailProps) {
     <>
       <BackTopBar />
       <div className="container container-sm container-detail">
-        <img
-          src={image}
-          alt=""
-          width="100%"
-        />
+        <img src={image} alt="" width="100%" />
         <h3 className="product-title">{title}</h3>
         <h4 className="product-price" style={{ fontWeight: 'bold' }}>
           {price}원

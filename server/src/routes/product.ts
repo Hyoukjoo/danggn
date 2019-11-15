@@ -67,4 +67,17 @@ router.post('', upload.single('image'), async (req, res) => {
   }
 });
 
+router.get('/category/:category', async (req, res) => {
+  const { category } = req.params
+
+  try {
+    const data = await Product.findAll({ where: { category }})
+
+    return res.json({ data })
+  } catch (e) {
+    return res.status(500).json({ msg: e.messgae });
+  }
+  
+})
+
 export default router;

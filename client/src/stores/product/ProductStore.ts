@@ -23,6 +23,12 @@ class ProductsStore {
   }
 
   @action
+  async getAllProductByCategory(category: number) {
+    const response = await this.productService.getByCategory(category);
+    this.setProducts(response.data.data);
+  }
+
+  @action
   async registrationProduct(product: ProductRegistrationDto) {
     try {
       const result = await this.productService.registration(product);

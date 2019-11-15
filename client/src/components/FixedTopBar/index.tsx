@@ -4,17 +4,20 @@ import { PAGE_PATHS } from '~constants';
 // @ts-ignore
 import LogoImage from '~assets/logo-basic.svg';
 
-function FixedTopBar() {
+interface I_props {
+  category?: number;
+}
+
+const FixedTopBar: React.FC<I_props> = ({ category }) => {
   return (
     <nav className="navbar nav-global fixed-top navbar-expand-sm">
       <div className="container">
         <Link to={PAGE_PATHS.PRODUCT_LISTS}>
-          <img className="img-brand" alt="당근마켓" width="132"
-               src={LogoImage} />
+          <img className="img-brand" alt="당근마켓" width="132" src={LogoImage} />
         </Link>
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">
-            <Link to={PAGE_PATHS.PRODUCT_REGISTRATION} >
+            <Link to={category ? `${PAGE_PATHS.PRODUCT_REGISTRATION}/${category}` : PAGE_PATHS.PRODUCT_REGISTRATION}>
               <i className="material-icons ic-create">create</i>
             </Link>
           </li>
@@ -22,6 +25,6 @@ function FixedTopBar() {
       </div>
     </nav>
   );
-}
+};
 
 export default FixedTopBar;
