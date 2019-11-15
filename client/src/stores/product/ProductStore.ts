@@ -7,8 +7,7 @@ class ProductsStore {
   @observable products: ProductDto[] = [];
   @observable detailProduct: ProductDto = {} as ProductDto;
 
-  constructor(private productService: ProductService) {
-  }
+  constructor(private productService: ProductService) {}
 
   @action
   async getAllProducts() {
@@ -27,7 +26,6 @@ class ProductsStore {
   async registrationProduct(product: ProductRegistrationDto) {
     try {
       const result = await this.productService.registration(product);
-      console.log(result);
       alert(result.data.msg);
     } catch (e) {
       alert(e.response.data.msg);
@@ -41,7 +39,7 @@ class ProductsStore {
 
   @action
   setDetailProduct(product: ProductDto) {
-    console.log("product", product);
+    console.log('product', product);
     this.detailProduct = product;
   }
 }

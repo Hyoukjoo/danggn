@@ -32,7 +32,7 @@ const ProductRegistration = inject(STORES.PRODUCTS_STORE)(
 
     const onCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
       setOption(null);
-      setCategory(event.target.value ? Number(event.target.value) : undefined);
+      setCategory(event.target.value ? parseInt(event.target.value, 10) : undefined);
     };
 
     const onRegister = async (event: FormEvent) => {
@@ -90,7 +90,7 @@ const ProductRegistration = inject(STORES.PRODUCTS_STORE)(
                 min="0"
                 step="1000"
                 value={price}
-                onChange={v => setPrice(Number(v.target.value))}
+                onChange={v => setPrice(parseInt(v.target.value, 10))}
                 placeholder="가격을 입력해주세요. (￦)"
               />
             </div>

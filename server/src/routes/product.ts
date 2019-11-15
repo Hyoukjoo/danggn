@@ -3,6 +3,7 @@ import * as multer from 'multer';
 
 import Product from '../models/Product';
 import insertOption from '../utils/insertOption';
+import findOption from '../utils/findOption';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -15,11 +16,19 @@ router.get('', async (req, res) => {
 });
 
 router.get('/:id', upload.single('image'), async (req, res) => {
-  const id = req.params.id;
+  const id = parseInt(req.params.id, 10);
 
   try {
-    const product = await Product.findByPk(Number(id));
-    return res.json({ data: product });
+    const product = await Product.findByPk(id);
+    const category = (product as Product).category;
+
+    const option = await findOption(category, id);
+
+    if (option) {
+      const data = Object.assign((product as Product).toJSON(), { option: option.toJSON() });
+
+      return res.json({ data });
+    } else return res.json({ data: product });
   } catch (e) {
     return res.status(500).json({ msg: e.message });
   }
@@ -28,7 +37,14 @@ router.get('/:id', upload.single('image'), async (req, res) => {
 router.post('', upload.single('image'), async (req, res) => {
   const image = req.file;
   const product = req.body;
-  const { userId, category, price, title, description, option } = product;
+  const { userId, category, price, title, description, optionType } = product;
+
+  const optionDetail = {};
+
+  for (let key in product) {
+    const basic = ['image', 'userId', 'category', 'price', 'title', 'description'];
+    if (!basic.includes(key)) Object.assign(optionDetail, { [key]: product[key] });
+  }
 
   try {
     const insertedProduct = await Product.create({
@@ -40,7 +56,7 @@ router.post('', upload.single('image'), async (req, res) => {
       image: `/${image.path}`,
     });
 
-    if (option) await insertOption(insertedProduct.id, product);
+    if (optionType) await insertOption(insertedProduct.id, optionDetail);
 
     return res.json({
       data: insertedProduct,

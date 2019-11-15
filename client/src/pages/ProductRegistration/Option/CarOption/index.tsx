@@ -11,33 +11,19 @@ const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
   };
 
   const onMileageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setMileage(
-      event.target.value ? parseInt(event.target.value, 10) : undefined,
-    );
+    setMileage(event.target.value ? parseInt(event.target.value, 10) : undefined);
   };
 
-  const onSmokerChange = (    event: React.MouseEvent<HTMLInputElement, MouseEvent>,  ) => {
-    setIsSmoker(
-      event.currentTarget.value
-        ? event.currentTarget.value === 'true'
-        : undefined,
-    );
+  const onSmokerChange = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+    setIsSmoker(event.currentTarget.value ? event.currentTarget.value === 'true' : undefined);
   };
 
-  useEffect(() => setOption({ old, mileage, isSmoker }), [
-    old,
-    mileage,
-    isSmoker,
-  ]);
+  useEffect(() => setOption({ old, mileage, isSmoker }), [old, mileage, isSmoker]);
 
   return (
     <>
       <div className="form-group form-car-model-year">
-        <select
-          id="carModelYear"
-          className="form-control"
-          onChange={onOldChange}
-        >
+        <select id="carModelYear" className="form-control" onChange={onOldChange}>
           <option value="">차량 연식을 선택해주세요</option>
           <option value="2020">2020년</option>
           <option value="2019">2019년</option>
@@ -85,10 +71,7 @@ const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
             value="false"
             onClick={onSmokerChange}
           />
-          <label
-            className="form-check-label non-smoker"
-            htmlFor="inlineNonSmoker"
-          >
+          <label className="form-check-label non-smoker" htmlFor="inlineNonSmoker">
             아니오, 비 흡연자 입니다.
           </label>
         </div>

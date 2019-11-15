@@ -29,15 +29,15 @@ export type ProductDto = {
   updatedAt: string;
 };
 
-export type T_Option = null | Car | RealEstate;
+export type T_Option = null | I_Car_Option | I_RealEstate_Option;
 
-interface Car {
+interface I_Car_Option {
   old: number;
   mileage: number;
   isSmoker: boolean;
 }
 
-interface RealEstate {
+interface I_RealEstate_Option {
   address: string;
   floor: number;
   size: number;
@@ -63,7 +63,7 @@ class ProductService {
     formData.append('price', String(body.price));
     if (body.option) {
       const { option } = body;
-      formData.append('option', getCategoryName(body.category));
+      formData.append('optionType', getCategoryName(body.category));
       for (let key in option) {
         formData.append(key, String(option[key]));
       }

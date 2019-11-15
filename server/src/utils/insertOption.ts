@@ -1,11 +1,11 @@
 import CarOption from '../models/CarOption';
 import RealEstateOption from '../models/RealEstateOption';
 
-const insertOption = async (productId: number, product: any) => {
+const insertOption = async (productId: number, optionDetail: any) => {
   try {
-    switch (product.option) {
+    switch (optionDetail.optionType) {
       case '차량':
-        const { old, mileage, isSmoker } = product;
+        const { old, mileage, isSmoker } = optionDetail;
         return await CarOption.create({
           productId,
           old: parseInt(old, 10),
@@ -14,7 +14,7 @@ const insertOption = async (productId: number, product: any) => {
         });
 
       case '부동산':
-        const { address, floor, size } = product;
+        const { address, floor, size } = optionDetail;
         return await RealEstateOption.create({
           productId,
           address,
@@ -26,7 +26,7 @@ const insertOption = async (productId: number, product: any) => {
         break;
     }
   } catch (e) {
-    throw Error('추가 항목을 등록할 수 없습니다.');
+    throw new Error('추가 항목을 등록할 수 없습니다.');
   }
 };
 
