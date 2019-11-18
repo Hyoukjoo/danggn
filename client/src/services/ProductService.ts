@@ -1,56 +1,17 @@
 import axios from 'axios';
-import { ApiResponse } from '~services/types';
+import { ApiResponse, ProductRegistrationDto, ProductDto } from '~services/types';
 import AuthStore from '~stores/auth/AuthStore';
 import { config } from 'dotenv';
 import { getCategoryName } from '~pages/utils';
 
 config();
 
-export type ProductRegistrationDto = {
-  userId?: string;
-  image: File;
-  category: number;
-  title: string;
-  description: string;
-  price: number;
-  option?: T_Option;
-};
-
-export type ProductDto = {
-  id: number;
-  userId: string;
-  title: string;
-  image: string;
-  category: number;
-  description: string;
-  price: number;
-  option?: T_Option;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type T_Option = null | I_Car_Option | I_RealEstate_Option;
-
-interface I_Car_Option {
-  old: number;
-  mileage: number;
-  isSmoker: boolean;
-}
-
-interface I_RealEstate_Option {
-  address: string;
-  floor: number;
-  size: number;
-}
-
 const API_HOST = process.env.API_HOST || 'http://localhost:5000/api';
 
 class ProductService {
   constructor(private authStore: AuthStore) {}
 
-  async registration(
-    body: ProductRegistrationDto,
-  ): Promise<ApiResponse<ProductDto>> {
+  async registration(body: ProductRegistrationDto): Promise<ApiResponse<ProductDto>> {
     if (this.authStore.auth == null) {
       throw new Error('need to login!');
     }
@@ -69,13 +30,9 @@ class ProductService {
       }
     }
 
-    return axios.post<ProductRegistrationDto, ApiResponse<ProductDto>>(
-      `${API_HOST}/products`,
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      },
-    );
+    return axios.post<ProductRegistrationDto, ApiResponse<ProductDto>>(`${API_HOST}/products`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   }
 
   async getAll(): Promise<ApiResponse<ProductDto[]>> {
@@ -87,7 +44,7 @@ class ProductService {
   }
 
   async getByCategory(category: number): Promise<ApiResponse<ProductDto[]>> {
-    return axios.get(`${API_HOST}/products/category/${category}`)
+    return axios.get(`${API_HOST}/products/category/${category}`);
   }
 }
 

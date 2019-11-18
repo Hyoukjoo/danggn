@@ -50,7 +50,7 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
       if (!description.trim()) return alert('제품 설명을 입력해주세요');
       if (option)
         for (let key in option) {
-          if (!option[key]) return alert(`추가 항목을 모두 입력해주세요`);
+          if (!option[key] && !(key === 'isSmoker' && !option[key])) return alert(`추가 항목을 모두 입력해주세요`);
         }
 
       const product = option

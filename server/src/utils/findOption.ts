@@ -8,7 +8,7 @@ const findOption = async (category: number, productId: number) => {
   else {
     try {
       switch (category) {
-        case 0:
+        case 1:
           return await CarOption.findOne({ where: { productId } });
         case 4:
           return await RealEstateOption.findOne({ where: { productId } });

@@ -595,7 +595,8 @@ footer {
   .mileage-option-container {
     justify-self: start;
     grid-template-columns: auto auto;
-    width: 190px;
+    column-gap: 5px;
+    width: 175px;
     height: 30px;
     padding: 0px 25px;
     border: 1px solid $color-border;
@@ -603,7 +604,7 @@ footer {
     overflow: hidden;
 
     input[type='number'] {
-      text-align: start;
+      text-align: end;
       box-sizing: border-box;
       width: 100%;
       height: 100%;
@@ -619,6 +620,10 @@ footer {
     input[type='number']::-webkit-inner-spin-button,
     input[type='number']::-webkit-outer-spin-button {
       -webkit-appearance: none;
+    }
+
+    label {
+      margin: 0;
     }
 
     span {

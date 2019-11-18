@@ -1,15 +1,10 @@
 import React from 'react';
+import { I_filter } from '../Type';
 
 interface I_props {
   category: number;
-  filters: I_car_filter[];
+  filters: I_filter[];
   deleteOption: (option: string) => void;
-}
-
-interface I_car_filter {
-  option: string;
-  detail: string;
-  order?: string;
 }
 
 const FilterList: React.FC<I_props> = ({ category, filters, deleteOption }) => {
@@ -37,7 +32,7 @@ const FilterList: React.FC<I_props> = ({ category, filters, deleteOption }) => {
   );
 };
 
-const formatCarFilter = (filter: I_car_filter) => {
+const formatCarFilter = (filter: I_filter) => {
   switch (filter.option) {
     case 'old':
       return { ...filter, detail: `${filter.detail}년` };

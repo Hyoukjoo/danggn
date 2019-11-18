@@ -2,8 +2,10 @@ import * as express from 'express';
 import * as multer from 'multer';
 
 import Product from '../models/Product';
+
 import insertOption from '../utils/insertOption';
 import findOption from '../utils/findOption';
+import findAllOption from '../utils/findAllOptions';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -68,16 +70,15 @@ router.post('', upload.single('image'), async (req, res) => {
 });
 
 router.get('/category/:category', async (req, res) => {
-  const { category } = req.params
+  const { category } = req.params;
 
   try {
-    const data = await Product.findAll({ where: { category }})
+    const data = await findAllOption(parseInt(category, 10));
 
-    return res.json({ data })
+    return res.json({ data });
   } catch (e) {
     return res.status(500).json({ msg: e.messgae });
   }
-  
-})
+});
 
 export default router;

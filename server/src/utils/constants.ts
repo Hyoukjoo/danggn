@@ -1,1 +1,1 @@
-export const CATEGORY_WITH_OPTION = [0, 4];
+export const CATEGORY_WITH_OPTION = [1, 4];

@@ -1,11 +1,18 @@
 import { action, observable } from 'mobx';
-import ProductService, { ProductDto, ProductRegistrationDto } from '~services/ProductService';
 import autobind from 'autobind-decorator';
+
+import ProductService from '~services/ProductService';
+import { ProductDto, ProductRegistrationDto } from '~services/types';
+import { I_filter } from '~components/FilterBar/Type';
+
+import sortProductHelper from '~utils/sortProductHelper';
 
 @autobind
 class ProductsStore {
   @observable products: ProductDto[] = [];
   @observable detailProduct: ProductDto = {} as ProductDto;
+
+  private cache: ProductDto[] = [];
 
   constructor(private productService: ProductService) {}
 
@@ -25,6 +32,7 @@ class ProductsStore {
   @action
   async getAllProductByCategory(category: number) {
     const response = await this.productService.getByCategory(category);
+    console.log(response.data.data);
     this.setProducts(response.data.data);
   }
 
@@ -36,6 +44,14 @@ class ProductsStore {
     } catch (e) {
       alert(e.response.data.msg);
     }
+  }
+
+  @action
+  sortProduct(category: number, filters: I_filter[] | undefined) {
+    if (this.cache.length < 1) this.cache = this.products;
+    if (!filters) return this.setProducts(this.cache);
+    const sortedProducts = sortProductHelper(category, this.cache, filters);
+    this.setProducts(sortedProducts);
   }
 
   @action
