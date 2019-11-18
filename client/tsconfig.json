@@ -3,7 +3,7 @@
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es5",
-    "lib": ["es6", "dom"],
+    "lib": ["es6", "dom", "es2015.iterable"],
     "sourceMap": true,
     "allowJs": true,
     "jsx": "preserve",
@@ -25,6 +25,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    "downlevelIteration": true,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {

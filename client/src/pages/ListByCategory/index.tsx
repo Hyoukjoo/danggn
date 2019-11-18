@@ -11,6 +11,7 @@ import Product from '~pages/ProductList/Product';
 import ProductsStore from '~stores/product/ProductStore';
 import CategoryBar from '~components/CategoryBar';
 import { getCategoryName } from '~pages/utils';
+import FilterBar from '~components/FilterBar';
 
 type ListByCategoryProps = {
   [STORES.PRODUCTS_STORE]: ProductsStore;
@@ -33,6 +34,8 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
           <h5 className="container-headline">{getCategoryName(category)} 중고 거래 제품</h5>
 
           <CategoryBar />
+
+          <FilterBar category={category} />
 
           <ul className="list-products row">
             {products.map(v => (
