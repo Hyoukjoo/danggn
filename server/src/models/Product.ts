@@ -1,4 +1,4 @@
-import { Model, Association } from 'sequelize';
+import { Model, Association, HasOneGetAssociationMixin } from 'sequelize';
 import CarOption from './CarOption';
 import RealEstateOption from './RealEstateOption';
 
@@ -13,6 +13,8 @@ export default class Product extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getCarOption!: HasOneGetAssociationMixin<CarOption>;
 
   public static associations: {
     carOptions: Association<Product, CarOption>;

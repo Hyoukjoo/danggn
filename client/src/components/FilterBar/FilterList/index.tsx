@@ -17,7 +17,7 @@ const FilterList: React.FC<I_props> = ({ category, filters, deleteOption }) => {
         filters.map(filter => {
           const formatedFilter = formatCarFilter(filter);
           return (
-            <div className="filter-tag-container" key={`${formatedFilter.option}`}>
+            <div className="filter-tag-container active" key={`${formatedFilter.option}`}>
               <span>
                 {`${formatedFilter.detail}`}
                 {formatedFilter.order && (formatedFilter.order === 'ASC' ? '▲' : '▼')}

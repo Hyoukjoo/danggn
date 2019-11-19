@@ -19,8 +19,6 @@ const sortCarProduct = (products: ProductWithOptionDto[], filters: I_filter[]) =
       else {
         switch (filter.option) {
           case 'old':
-            console.log(product.carOptions.old);
-            console.log(filter);
             return product.carOptions.old === parseInt(filter.detail, 10);
           case 'mileage':
             return product.carOptions.mileage <= parseInt(filter.detail, 10);

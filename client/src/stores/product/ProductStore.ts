@@ -48,7 +48,7 @@ class ProductsStore {
 
   @action
   sortProduct(category: number, filters: I_filter[] | undefined) {
-    if (this.cache.length < 1) this.cache = this.products;
+    if (this.cache.length < 1) this.cache = Array.from(this.products);
     if (!filters) return this.setProducts(this.cache);
     const sortedProducts = sortProductHelper(category, this.cache, filters);
     this.setProducts(sortedProducts);

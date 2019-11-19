@@ -6,6 +6,7 @@ import Product from '../models/Product';
 import insertOption from '../utils/insertOption';
 import findOption from '../utils/findOption';
 import findAllOption from '../utils/findAllOptions';
+import { CATEGORY_NAME } from 'src/utils/constants';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -21,16 +22,8 @@ router.get('/:id', upload.single('image'), async (req, res) => {
   const id = parseInt(req.params.id, 10);
 
   try {
-    const product = await Product.findByPk(id);
-    const category = (product as Product).category;
-
-    const option = await findOption(category, id);
-
-    if (option) {
-      const data = Object.assign((product as Product).toJSON(), { option: option.toJSON() });
-
-      return res.json({ data });
-    } else return res.json({ data: product });
+    const product = await findOption(id);
+    return res.json({ data: product });
   } catch (e) {
     return res.status(500).json({ msg: e.message });
   }
