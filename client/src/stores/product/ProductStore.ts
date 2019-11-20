@@ -6,6 +6,8 @@ import { ProductDto, ProductRegistrationDto } from '~services/types';
 import { I_filter } from '~components/FilterBar/Type';
 
 import sortProductHelper from '~utils/sortProductHelper';
+import { I_Filter } from '~components/FixedTopBar';
+import filterProductsHelper from '~utils/filterProductHelper';
 
 @autobind
 class ProductsStore {
@@ -44,6 +46,14 @@ class ProductsStore {
     } catch (e) {
       alert(e.response.data.msg);
     }
+  }
+
+  @action
+  filterProduct(category: number | undefined, filter: I_Filter | undefined) {
+    if (this.cache.length < 1) this.cache = Array.from(this.products);
+    if (!filter) return this.setProducts(this.cache);
+    const filteredProducts = filterProductsHelper(category, this.cache, filter);
+    this.setProducts(filteredProducts);
   }
 
   @action

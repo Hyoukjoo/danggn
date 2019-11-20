@@ -182,7 +182,7 @@ const CarFilter: React.FC<CarFilterProps> = inject(STORES.PRODUCTS_STORE)(
           )}
 
           <div className="filter-submit-container" onClick={onSubmitFilter}>
-            <i className="material-icons ic-filter">details</i>
+            <i className="material-icons ic-filter">filter_list</i>
           </div>
           <div className="init-container">
             <i className="material-icons" onClick={clearOption}>

@@ -11,3 +11,5 @@ export enum PAGE_PATHS {
   PRODUCT = '/products',
   PRODUCT_REGISTRATION = '/products-registration',
 }
+
+export const CATEGORY_WITH_OPTION = [1];

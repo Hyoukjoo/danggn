@@ -20,12 +20,11 @@ type ListByCategoryProps = {
 const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)(
   observer(props => {
     const category = parseInt(props.match.params.category, 10);
+    const { products } = props[STORES.PRODUCTS_STORE];
 
     useEffect(() => {
       props[STORES.PRODUCTS_STORE].getAllProductByCategory(category);
     }, [category]);
-
-    const { products } = props[STORES.PRODUCTS_STORE];
 
     return (
       <>
