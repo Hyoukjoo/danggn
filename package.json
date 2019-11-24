@@ -2,7 +2,7 @@
   "name": "prgms-daangn",
   "version": "1.0.0",
   "engines": {
-    "node": "10.16.0"
+    "node": "10.14.1"
   },
   "main": "index.js",
   "private": true,
