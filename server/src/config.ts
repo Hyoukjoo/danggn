@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+
+config();
+
 export default {
   auth: {
     key: process.env.AUTH_KEY || 'prgms-daangn-key',
