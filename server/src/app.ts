@@ -39,8 +39,8 @@ async function runServer() {
     res.sendFile(path.join(__dirname, 'public/index.html'));
   });
 
-  const server = app.listen(5000, () => {
-    logger.info('Example app listening on port 5000!');
+  const server = app.listen(process.env.PORT, () => {
+    logger.info(`Example app listening on port ${process.env.PORT}!`);
   });
 
   try {
