@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "nodemon --config ./nodemon.json",
     "build": "rm -rf ./build/ && tsc",
-    "start": "node build/app.js"
+    "start": "cross-env NODE_ENV=production node build/app.js"
   },
   "license": "MIT",
   "dependencies": {
