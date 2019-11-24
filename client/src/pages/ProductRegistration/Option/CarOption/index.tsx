@@ -2,23 +2,33 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { I_Option_props } from '..';
 
 const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
-  const [old, setOld] = useState();
-  const [mileage, setMileage] = useState();
-  const [isSmoker, setIsSmoker] = useState();
+  const [old, setOld] = useState<number>();
+  const [mileage, setMileage] = useState<number>();
+  const [isSmoker, setIsSmoker] = useState<boolean>();
+
+  useEffect(() => {
+    if (old && mileage && typeof isSmoker !== 'undefined') setOption({ old, mileage, isSmoker });
+  }, [old, mileage, isSmoker]);
 
   const onOldChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setOld(event.target.value ? parseInt(event.target.value, 10) : undefined);
   };
 
   const onMileageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setMileage(event.target.value ? parseInt(event.target.value, 10) : undefined);
+    const inputMileage = event.target.valueAsNumber;
+
+    if (inputMileage > 10000) {
+      alert('10,000km 이하로 입력해 주세요');
+      event.target.valueAsNumber =
+        event.target.valueAsNumber === 100000 ? 10000 : parseInt(event.target.value.slice(0, 4), 10);
+    }
+
+    setMileage(event.target.value ? event.target.valueAsNumber : undefined);
   };
 
   const onSmokerChange = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
     setIsSmoker(event.currentTarget.value ? event.currentTarget.value === 'true' : undefined);
   };
-
-  useEffect(() => setOption({ old, mileage, isSmoker }), [old, mileage, isSmoker]);
 
   return (
     <>
@@ -43,6 +53,8 @@ const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
           type="number"
           className="form-control"
           id="carMileage"
+          min={0}
+          max={10000}
           placeholder="주행거리를 입력해주세요.(km)"
           onChange={onMileageChange}
         />
@@ -51,10 +63,10 @@ const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
         <label>차량 판매자 흡연 여부</label>
         <div className="form-check form-check-inline form-check-smoking">
           <input
-            className="form-check-input"
             type="radio"
-            name="smokingOptions"
             id="inlineSmoker"
+            className="form-check-input"
+            name="smokingOptions"
             value="true"
             onClick={onSmokerChange}
           />
@@ -64,10 +76,10 @@ const CarOption: React.FC<I_Option_props> = ({ setOption }) => {
         </div>
         <div className="form-check form-check-inline form-check-nonsmoking">
           <input
-            className="form-check-input"
             type="radio"
-            name="smokingOptions"
             id="inlineNonSmoker"
+            className="form-check-input"
+            name="smokingOptions"
             value="false"
             onClick={onSmokerChange}
           />

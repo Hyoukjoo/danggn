@@ -32,7 +32,7 @@ export interface ProductWithOptionDto extends ProductDto {
   realEstateOptions?: I_RealEstate_Option;
 }
 
-export type T_Option = null | I_Car_Option | I_RealEstate_Option;
+export type T_Option = undefined | I_Car_Option | I_RealEstate_Option;
 
 export interface I_Car_Option {
   old: number;
@@ -41,9 +41,9 @@ export interface I_Car_Option {
 }
 
 export interface I_RealEstate_Option {
-  address: string;
-  floor: number;
-  size: number;
+  address: string | undefined;
+  floor: number | undefined;
+  size: number | undefined;
 }
 
 export type ApiResponse<T> = AxiosResponse<Response<T>>;

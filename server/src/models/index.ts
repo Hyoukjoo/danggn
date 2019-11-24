@@ -67,7 +67,7 @@ export function init(): Sequelize {
         allowNull: false,
       },
       price: {
-        type: DataTypes.DECIMAL.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
       title: {

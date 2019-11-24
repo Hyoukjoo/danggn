@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { STORES } from '~constants';
+import { STORES, CATEGORY_WITH_OPTION } from '~constants';
 import ProductsStore from '~stores/product/ProductStore';
 import BackTopBar from '~components/BackTopBar';
 import Footer from '~components/Footer';
@@ -22,6 +22,34 @@ function ProductDetail(props: ProductDetailProps) {
   const { image, category, title, price, createdAt, description } = detailProduct;
   const time = moment(createdAt);
 
+  const renderOption = useCallback(() => {
+    switch (category) {
+      case 1:
+        if (!detailProduct.carOptions) return;
+        else {
+          const { old, mileage, isSmoker } = detailProduct.carOptions;
+          return (
+            detailProduct.carOptions && (
+              <>
+                <li className="list-item car-model-year">
+                  차량 연식 <span>{old}년</span>
+                </li>
+                <li className="list-item car-mileage">
+                  주행 거리 <span>{mileage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}km</span>
+                </li>
+                <li className="list-item car-smoking">
+                  판매자 흡연 여부 <span>{isSmoker ? '흡연자' : '비흡연자'}</span>
+                </li>
+              </>
+            )
+          );
+        }
+
+      default:
+        return;
+    }
+  }, [category, detailProduct]);
+
   return (
     <>
       <BackTopBar />
@@ -29,7 +57,7 @@ function ProductDetail(props: ProductDetailProps) {
         <img src={image} alt="" width="100%" />
         <h3 className="product-title">{title}</h3>
         <h4 className="product-price" style={{ fontWeight: 'bold' }}>
-          {price}원
+          {String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
         </h4>
         <ul className="list-product-information">
           <li className="list-item category">
@@ -42,15 +70,7 @@ function ProductDetail(props: ProductDetailProps) {
             </span>
           </li>
           // 추가된 부분!
-          <li className="list-item car-model-year">
-            차량 연식 <span>3년</span>
-          </li>
-          <li className="list-item car-mileage">
-            주행 거리 <span>1,299km</span>
-          </li>
-          <li className="list-item car-smoking">
-            판매자 흡연 여부 <span>흡연자</span>
-          </li>
+          {CATEGORY_WITH_OPTION.includes(category) && renderOption()}
         </ul>
         <div className="description">{description}</div>
       </div>

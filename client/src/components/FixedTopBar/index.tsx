@@ -34,7 +34,7 @@ const FixedTopBar: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)
 
     useEffect(() => {
       props[STORES.PRODUCTS_STORE].filterProduct(category, filter);
-    }, [category, filter]);
+    }, [filter]);
 
     const showFilterModal = () => {
       if (isFilterModal) setIsFilterModal(false);
@@ -44,7 +44,6 @@ const FixedTopBar: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)
     const renderFilterBar = useCallback(() => {
       switch (category) {
         case 1:
-          console.log(filter);
           return (
             <li className="nav-item">
               <button className={filter ? 'btn-filter active' : 'btn-filter'} onClick={showFilterModal}>

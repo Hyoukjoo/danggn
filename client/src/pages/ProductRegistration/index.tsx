@@ -1,14 +1,14 @@
-import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 import { inject, observer } from 'mobx-react';
 
-import { STORES } from '~constants';
+import { STORES, CATEGORY_WITH_OPTION } from '~constants';
 import ProductsStore from '~stores/product/ProductStore';
-import { T_Option } from '~services/ProductService';
+import { T_Option } from '~services/types';
 
 import Option from './Option';
 import BackTopBar from '~components/BackTopBar';
 import Footer from '~components/Footer';
-import { RouteComponentProps } from 'react-router';
 
 type RegisterProps = InjectedProps & RouteComponentProps<{ category?: string }>;
 
@@ -20,13 +20,13 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
   observer(props => {
     const defaultCategory = props.match.params.category ? parseInt(props.match.params.category, 10) : undefined;
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState(0);
-    const [category, setCategory] = useState(defaultCategory);
-    const [fileName, setFileName] = useState('파일선택');
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [price, setPrice] = useState<number>(0);
+    const [category, setCategory] = useState<number | undefined>(defaultCategory);
+    const [fileName, setFileName] = useState<string>('파일선택');
     const [image, setImage] = useState();
-    const [option, setOption] = useState(null as T_Option);
+    const [option, setOption] = useState<T_Option>();
 
     const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.files != null && event.target.files.length > 0) {
@@ -36,7 +36,7 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
     };
 
     const onCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-      setOption(null);
+      setOption(undefined);
       setCategory(event.target.value ? parseInt(event.target.value, 10) : undefined);
     };
 
@@ -48,10 +48,12 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
       if (!title.trim()) return alert('제품 이름을 입력해주세요');
       if (!category) return alert('카테고리를 선택해 주세요');
       if (!description.trim()) return alert('제품 설명을 입력해주세요');
-      if (option)
+      if (option || (CATEGORY_WITH_OPTION.includes(category) && !option)) {
+        if (!option) return alert('추가 항목을 모두 입력해 주세요');
         for (let key in option) {
-          if (!option[key] && !(key === 'isSmoker' && !option[key])) return alert(`추가 항목을 모두 입력해주세요`);
+          if (typeof option[key] === 'undefined') return alert(`추가 항목을 모두 입력해주세요`);
         }
+      }
 
       const product = option
         ? { title, description, category, image, price, option: { ...option } }
@@ -91,7 +93,7 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
               <select
                 id="productsCategory"
                 className="form-control"
-                value={category}
+                // value={category}
                 onChange={onCategoryChange}
                 defaultValue={defaultCategory}
               >

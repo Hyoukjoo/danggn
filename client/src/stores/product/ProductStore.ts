@@ -2,7 +2,7 @@ import { action, observable } from 'mobx';
 import autobind from 'autobind-decorator';
 
 import ProductService from '~services/ProductService';
-import { ProductDto, ProductRegistrationDto } from '~services/types';
+import { ProductDto, ProductRegistrationDto, ProductWithOptionDto } from '~services/types';
 import { I_filter } from '~components/FilterBar/Type';
 
 import sortProductHelper from '~utils/sortProductHelper';
@@ -12,7 +12,7 @@ import filterProductsHelper from '~utils/filterProductHelper';
 @autobind
 class ProductsStore {
   @observable products: ProductDto[] = [];
-  @observable detailProduct: ProductDto = {} as ProductDto;
+  @observable detailProduct: ProductWithOptionDto = {} as ProductWithOptionDto;
 
   private cache: ProductDto[] = [];
 
@@ -21,7 +21,6 @@ class ProductsStore {
   @action
   async getAllProducts() {
     const response = await this.productService.getAll();
-    console.log(response.data.data);
     this.setProducts(response.data.data);
   }
 
@@ -34,8 +33,8 @@ class ProductsStore {
   @action
   async getAllProductByCategory(category: number) {
     const response = await this.productService.getByCategory(category);
-    console.log(response.data.data);
     this.setProducts(response.data.data);
+    this.cache = response.data.data;
   }
 
   @action
@@ -50,7 +49,6 @@ class ProductsStore {
 
   @action
   filterProduct(category: number | undefined, filter: I_Filter | undefined) {
-    if (this.cache.length < 1) this.cache = Array.from(this.products);
     if (!filter) return this.setProducts(this.cache);
     const filteredProducts = filterProductsHelper(category, this.cache, filter);
     this.setProducts(filteredProducts);
@@ -58,7 +56,6 @@ class ProductsStore {
 
   @action
   sortProduct(category: number, filters: I_filter[] | undefined) {
-    if (this.cache.length < 1) this.cache = Array.from(this.products);
     if (!filters) return this.setProducts(this.cache);
     const sortedProducts = sortProductHelper(category, this.cache, filters);
     this.setProducts(sortedProducts);
@@ -71,7 +68,6 @@ class ProductsStore {
 
   @action
   setDetailProduct(product: ProductDto) {
-    console.log('product', product);
     this.detailProduct = product;
   }
 }

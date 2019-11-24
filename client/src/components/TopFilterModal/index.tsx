@@ -34,7 +34,7 @@ const TopFilterModal: React.FC<I_props> = ({ filter, setFilter, showFilterModal 
 
   const onChangeCheckSmokeRadio = (event: FormEvent<HTMLInputElement>) => {
     const is = event.currentTarget.value === 'true';
-    if (!(typeof isSmoker === 'undefined') && isSmoker === is) setIsSmoker(undefined);
+    if (typeof isSmoker !== 'undefined' && isSmoker === is) setIsSmoker(undefined);
     else setIsSmoker(is);
   };
 
