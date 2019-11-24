@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { ApiResponse } from '~services/types';
-import { config } from 'dotenv'
+import { config } from 'dotenv';
 
 config();
 
 export type LoginResponseDto = {
   token: string;
   id: number;
-}
+};
 
 export type LoginSignupRequestDto = {
   email: string;
@@ -18,9 +18,9 @@ export type AuthResponseDto = {
   id: string;
   email: string;
   password: string;
-}
+};
 
-const API_HOST = process.env.NODE_ENV ? 'http://45.119.146.245:5000' : 'http://localhost:5000/api';
+const API_HOST = process.env.NODE_ENV === 'production' ? 'http://45.119.146.245:5000/api' : 'http://localhost:5000/api';
 
 class AuthService {
   async login(body: LoginSignupRequestDto): Promise<ApiResponse<LoginResponseDto>> {
