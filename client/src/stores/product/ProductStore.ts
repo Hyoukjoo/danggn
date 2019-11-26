@@ -103,12 +103,6 @@ class ProductsStore {
   setFilter(filterOptions: I_Filter | undefined) {
     this.filter = filterOptions;
   }
-
-  @action
-  setCountLastId(category: number, lastId?: number) {
-    if (this.currentCategory === category) this.countLastId = lastId ? [lastId] : [];
-    else this.countLastId = this.countLastId = lastId ? [lastId] : [];
-  }
 }
 
 export default ProductsStore;
