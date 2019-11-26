@@ -35,16 +35,16 @@ class ProductService {
     });
   }
 
-  async getAll(): Promise<ApiResponse<ProductDto[]>> {
-    return axios.get(`${API_HOST}/products`);
+  async getAll(lastId?: number): Promise<ApiResponse<ProductDto[]>> {
+    return axios.get(`${API_HOST}/products?lastId=${lastId || 0}`);
   }
 
   async getById(id: string): Promise<ApiResponse<ProductDto>> {
     return axios.get(`${API_HOST}/products/${id}`);
   }
 
-  async getByCategory(category: number): Promise<ApiResponse<ProductDto[]>> {
-    return axios.get(`${API_HOST}/products/category/${category}`);
+  async getByCategory(category: number, lastId?: number): Promise<ApiResponse<ProductDto[]>> {
+    return axios.get(`${API_HOST}/products/category?category=${category}&lastId=${lastId || 0}`);
   }
 }
 

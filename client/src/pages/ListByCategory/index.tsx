@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import { inject, observer } from 'mobx-react';
 
-import { STORES, PAGE_PATHS } from '~constants';
 import FixedTopBar from '~components/FixedTopBar';
 import Footer from '~components/Footer';
+import CategoryBar from '~components/CategoryBar';
+import FilterBar from '~components/FilterBar';
 import Product from '~pages/ProductList/Product';
 
 import ProductsStore from '~stores/product/ProductStore';
-import CategoryBar from '~components/CategoryBar';
+import { STORES, PAGE_PATHS } from '~constants';
 import { getCategoryName } from '~pages/utils';
-import FilterBar from '~components/FilterBar';
 
 type ListByCategoryProps = {
   [STORES.PRODUCTS_STORE]: ProductsStore;
@@ -19,12 +19,36 @@ type ListByCategoryProps = {
 
 const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)(
   observer(props => {
+    const { products, getAllProductByCategory, hasMoreProducts, filter, filterProduct } = props[STORES.PRODUCTS_STORE];
     const category = parseInt(props.match.params.category, 10);
-    const { products } = props[STORES.PRODUCTS_STORE];
+    const countLastId = useRef<number[]>([]);
+
+    const onScroll = useCallback(() => {
+      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        const lastId = products[products.length - 1].id;
+        if (hasMoreProducts) {
+          if (!countLastId.current.includes(lastId)) getAllProductByCategory(category, lastId);
+        }
+        countLastId.current.push(lastId);
+      }
+    }, [category, products.length, hasMoreProducts]);
 
     useEffect(() => {
-      props[STORES.PRODUCTS_STORE].getAllProductByCategory(category);
+      countLastId.current = [];
+      getAllProductByCategory(category);
     }, [category]);
+
+    useEffect(() => {
+      if (category) filterProduct(category, filter);
+    }, [category, filter]);
+
+    useEffect(() => {
+      if (!products.length) return;
+      window.addEventListener('scroll', onScroll);
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+      };
+    }, [products.length]);
 
     return (
       <>

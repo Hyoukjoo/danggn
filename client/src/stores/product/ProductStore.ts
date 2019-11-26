@@ -2,26 +2,30 @@ import { action, observable } from 'mobx';
 import autobind from 'autobind-decorator';
 
 import ProductService from '~services/ProductService';
-import { ProductDto, ProductRegistrationDto, ProductWithOptionDto } from '~services/types';
+import { ProductDto, ProductRegistrationDto, ProductWithOptionDto, I_Filter } from '~services/types';
 import { I_filter } from '~components/FilterBar/Type';
 
 import sortProductHelper from '~utils/sortProductHelper';
-import { I_Filter } from '~components/FixedTopBar';
 import filterProductsHelper from '~utils/filterProductHelper';
 
 @autobind
 class ProductsStore {
   @observable products: ProductDto[] = [];
   @observable detailProduct: ProductWithOptionDto = {} as ProductWithOptionDto;
+  @observable filter: I_Filter | undefined = undefined;
+  @observable hasMoreProducts: boolean = true;
+  @observable lastId: number = 0;
 
-  private cache: ProductDto[] = [];
+  private cache: ProductDto[][] = [];
+  private currentCategory: number = 9999;
 
   constructor(private productService: ProductService) {}
 
   @action
-  async getAllProducts() {
-    const response = await this.productService.getAll();
-    this.setProducts(response.data.data);
+  async getAllProducts(lastId?: number) {
+    const response = await this.productService.getAll(lastId);
+    this.hasMoreProducts = response.data.data.length === 12;
+    this.setProducts(this.products.concat(response.data.data));
   }
 
   @action
@@ -31,10 +35,35 @@ class ProductsStore {
   }
 
   @action
-  async getAllProductByCategory(category: number) {
-    const response = await this.productService.getByCategory(category);
-    this.setProducts(response.data.data);
-    this.cache = response.data.data;
+  async getAllProductByCategory(category: number, lastId?: number) {
+    let response;
+    if (this.currentCategory === category) {
+      if (lastId && this.cache[category][this.cache[category].length - 1].id < lastId)
+        response = await this.productService.getByCategory(
+          category,
+          this.cache[category][this.cache[category].length - 1].id,
+        );
+      else response = await this.productService.getByCategory(category, lastId);
+    } else {
+      response = await this.productService.getByCategory(category);
+    }
+    // const response =
+    //   this.currentCategory === category
+    //     ? await this.productService.getByCategory(category, lastId)
+    //     : await this.productService.getByCategory(category);
+    this.hasMoreProducts = response.data.data.length === 12;
+    if (this.currentCategory === category) {
+      if (this.cache[category][0].id !== response.data.data[0].id) {
+        const newProducts = this.cache[category] ? this.cache[category].concat(response.data.data) : response.data.data;
+        const filteredProducts = this.filter ? filterProductsHelper(category, newProducts, this.filter) : newProducts;
+        this.cache[category] = newProducts;
+        this.setProducts(filteredProducts);
+      }
+    } else {
+      this.currentCategory = category;
+      this.cache[category] = response.data.data;
+      this.setProducts(response.data.data);
+    }
   }
 
   @action
@@ -48,16 +77,15 @@ class ProductsStore {
   }
 
   @action
-  filterProduct(category: number | undefined, filter: I_Filter | undefined) {
-    if (!filter) return this.setProducts(this.cache);
-    const filteredProducts = filterProductsHelper(category, this.cache, filter);
+  filterProduct(category: number, filter: I_Filter | undefined) {
+    if (!filter) return this.cache[category] && this.setProducts(this.cache[category]);
+    const filteredProducts = filterProductsHelper(category, this.cache[category], filter);
     this.setProducts(filteredProducts);
   }
-
   @action
-  sortProduct(category: number, filters: I_filter[] | undefined) {
-    if (!filters) return this.setProducts(this.cache);
-    const sortedProducts = sortProductHelper(category, this.cache, filters);
+  sortProduct(category: number, filter: I_filter[] | undefined) {
+    if (!filter) return this.setProducts(this.cache[category]);
+    const sortedProducts = sortProductHelper(category, this.cache[category], filter);
     this.setProducts(sortedProducts);
   }
 
@@ -69,6 +97,17 @@ class ProductsStore {
   @action
   setDetailProduct(product: ProductDto) {
     this.detailProduct = product;
+  }
+
+  @action
+  setFilter(filterOptions: I_Filter | undefined) {
+    this.filter = filterOptions;
+  }
+
+  @action
+  setCountLastId(category: number, lastId?: number) {
+    if (this.currentCategory === category) this.countLastId = lastId ? [lastId] : [];
+    else this.countLastId = this.countLastId = lastId ? [lastId] : [];
   }
 }
 

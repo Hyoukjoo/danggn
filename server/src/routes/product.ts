@@ -1,21 +1,47 @@
 import * as express from 'express';
 import * as multer from 'multer';
+import { Op } from 'sequelize';
 
 import Product from '../models/Product';
 
 import insertOption from '../utils/insertOption';
 import findOption from '../utils/findOption';
 import findAllOption from '../utils/findAllOptions';
-import { CATEGORY_NAME } from 'src/utils/constants';
 
 const upload = multer({ dest: 'uploads/' });
 
 const router = express.Router();
 
 router.get('', async (req, res) => {
-  const products = await Product.findAll();
+  const lastId = parseInt(req.query.lastId, 10);
+  let where = {};
 
-  res.json({ data: products });
+  if (lastId)
+    where = {
+      id: {
+        [Op.lt]: lastId,
+      },
+    };
+
+  try {
+    const products = await Product.findAll({ where, limit: 12, order: [['id', 'DESC']] });
+
+    res.json({ data: products });
+  } catch (e) {
+    res.status(500).json({ msg: e.message });
+  }
+});
+
+router.get('/category', async (req, res) => {
+  const { category, lastId } = req.query;
+
+  try {
+    const data = await findAllOption(parseInt(category, 10), parseInt(lastId, 10));
+
+    return res.json({ data });
+  } catch (e) {
+    return res.status(500).json({ msg: e.messgae });
+  }
 });
 
 router.get('/:id', upload.single('image'), async (req, res) => {
@@ -59,18 +85,6 @@ router.post('', upload.single('image'), async (req, res) => {
     });
   } catch (e) {
     return res.status(500).json({ msg: e.message });
-  }
-});
-
-router.get('/category/:category', async (req, res) => {
-  const { category } = req.params;
-
-  try {
-    const data = await findAllOption(parseInt(category, 10));
-
-    return res.json({ data });
-  } catch (e) {
-    return res.status(500).json({ msg: e.messgae });
   }
 });
 

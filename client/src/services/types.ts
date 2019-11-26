@@ -41,9 +41,17 @@ export interface I_Car_Option {
 }
 
 export interface I_RealEstate_Option {
-  address: string | undefined;
-  floor: number | undefined;
-  size: number | undefined;
+  address: string;
+  floor: number;
+  size: number;
+}
+
+export interface I_Filter {
+  startOld: number;
+  endOld: number;
+  startMileage: number;
+  endMileage: number;
+  isSmoker: boolean | undefined;
 }
 
 export type ApiResponse<T> = AxiosResponse<Response<T>>;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
@@ -17,24 +17,13 @@ interface I_props {
   category?: number;
 }
 
-export interface I_Filter {
-  startOld: number;
-  endOld: number;
-  startMileage: number;
-  endMileage: number;
-  isSmoker: boolean | undefined;
-}
-
 const FixedTopBar: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)(
   observer(props => {
     const [isFilterModal, setIsFilterModal] = useState<boolean>(false);
-    const [filter, setFilter] = useState<I_Filter>();
+
+    const { filter } = props[STORES.PRODUCTS_STORE];
 
     const category = props.category ? props.category : undefined;
-
-    useEffect(() => {
-      props[STORES.PRODUCTS_STORE].filterProduct(category, filter);
-    }, [filter]);
 
     const showFilterModal = () => {
       if (isFilterModal) setIsFilterModal(false);
@@ -75,7 +64,7 @@ const FixedTopBar: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)
             </ul>
           </div>
         </nav>
-        {isFilterModal && <TopFilterModal showFilterModal={showFilterModal} filter={filter} setFilter={setFilter} />}
+        {isFilterModal && <TopFilterModal showFilterModal={showFilterModal} />}
       </>
     );
   }),

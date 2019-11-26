@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
@@ -10,17 +10,36 @@ import Product from '~pages/ProductList/Product';
 import ProductsStore from '~stores/product/ProductStore';
 import { PAGE_PATHS, STORES } from '~constants';
 
-interface InjectedProps {
+type InjectedProps = {
   [STORES.PRODUCTS_STORE]: ProductsStore;
-}
+} & RouteComponentProps;
 
-class ProductList extends Component<InjectedProps & RouteComponentProps> {
-  componentWillMount(): void {
-    this.props[STORES.PRODUCTS_STORE].getAllProducts();
-  }
+const ProductList: React.FC<InjectedProps> = inject(STORES.PRODUCTS_STORE)(
+  observer(props => {
+    const { products, getAllProducts, hasMoreProducts } = props[STORES.PRODUCTS_STORE];
+    const count: number[] = [];
 
-  render() {
-    const { products } = this.props[STORES.PRODUCTS_STORE];
+    const onScroll = useCallback(() => {
+      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        if (hasMoreProducts) {
+          const lastId = products[products.length - 1].id;
+          if (!count.includes(lastId)) getAllProducts(lastId);
+          count.push(lastId);
+        }
+      }
+    }, [products.length, hasMoreProducts]);
+
+    useEffect(() => {
+      getAllProducts();
+    }, []);
+
+    useEffect(() => {
+      window.addEventListener('scroll', onScroll);
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+      };
+    }, [products.length]);
+
     return (
       <>
         <FixedTopBar />
@@ -42,7 +61,7 @@ class ProductList extends Component<InjectedProps & RouteComponentProps> {
         <Footer />
       </>
     );
-  }
-}
+  }),
+);
 
-export default inject(STORES.PRODUCTS_STORE)(observer(ProductList));
+export default ProductList;
