@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const express = require("express");
 const multer = require("multer");
+const sequelize_1 = require("sequelize");
 const Product_1 = require("../models/Product");
 const insertOption_1 = require("../utils/insertOption");
 const findOption_1 = require("../utils/findOption");
@@ -10,8 +11,31 @@ const findAllOptions_1 = require("../utils/findAllOptions");
 const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 router.get('', (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const products = yield Product_1.default.findAll();
-    res.json({ data: products });
+    const lastId = parseInt(req.query.lastId, 10);
+    let where = {};
+    if (lastId)
+        where = {
+            id: {
+                [sequelize_1.Op.lt]: lastId,
+            },
+        };
+    try {
+        const products = yield Product_1.default.findAll({ where, limit: 12, order: [['id', 'DESC']] });
+        res.json({ data: products });
+    }
+    catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}));
+router.get('/category', (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const { category, lastId } = req.query;
+    try {
+        const data = yield findAllOptions_1.default(parseInt(category, 10), parseInt(lastId, 10));
+        return res.json({ data });
+    }
+    catch (e) {
+        return res.status(500).json({ msg: e.messgae });
+    }
 }));
 router.get('/:id', upload.single('image'), (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id, 10);
@@ -51,16 +75,6 @@ router.post('', upload.single('image'), (req, res) => tslib_1.__awaiter(void 0, 
     }
     catch (e) {
         return res.status(500).json({ msg: e.message });
-    }
-}));
-router.get('/category/:category', (req, res) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const { category } = req.params;
-    try {
-        const data = yield findAllOptions_1.default(parseInt(category, 10));
-        return res.json({ data });
-    }
-    catch (e) {
-        return res.status(500).json({ msg: e.messgae });
     }
 }));
 exports.default = router;
