@@ -17,13 +17,19 @@ class ProductsStore {
   @observable lastId: number = 0;
 
   private cache: ProductDto[][] = [];
-  private currentCategory: number = 9999;
+  private currentCategory: number = 486;
 
   constructor(private productService: ProductService) {}
 
   @action
   async getAllProducts(lastId?: number) {
     const response = await this.productService.getAll(lastId);
+    if (this.currentCategory !== 486) {
+      this.currentCategory = 486;
+      this.hasMoreProducts = response.data.data.length === 12;
+      return this.setProducts(response.data.data);
+    }
+    if (this.products.length > 0 && this.products[0].id === response.data.data[0].id) return;
     this.hasMoreProducts = response.data.data.length === 12;
     this.setProducts(this.products.concat(response.data.data));
   }
@@ -38,24 +44,25 @@ class ProductsStore {
   async getAllProductByCategory(category: number, lastId?: number) {
     let response;
     if (this.currentCategory === category) {
-      if (lastId && this.cache[category][this.cache[category].length - 1].id < lastId)
+      if (lastId && this.cache[category][this.cache[category].length - 1].id < lastId) {
         response = await this.productService.getByCategory(
           category,
           this.cache[category][this.cache[category].length - 1].id,
         );
-      else response = await this.productService.getByCategory(category, lastId);
+      } else {
+        response = await this.productService.getByCategory(category, lastId);
+      }
     } else {
       response = await this.productService.getByCategory(category);
     }
-    // const response =
-    //   this.currentCategory === category
-    //     ? await this.productService.getByCategory(category, lastId)
-    //     : await this.productService.getByCategory(category);
+
     this.hasMoreProducts = response.data.data.length === 12;
+
     if (this.currentCategory === category) {
       if (this.cache[category][0].id !== response.data.data[0].id) {
         const newProducts = this.cache[category] ? this.cache[category].concat(response.data.data) : response.data.data;
         const filteredProducts = this.filter ? filterProductsHelper(category, newProducts, this.filter) : newProducts;
+
         this.cache[category] = newProducts;
         this.setProducts(filteredProducts);
       }
@@ -80,6 +87,8 @@ class ProductsStore {
   filterProduct(category: number, filter: I_Filter | undefined) {
     if (!filter) return this.cache[category] && this.setProducts(this.cache[category]);
     const filteredProducts = filterProductsHelper(category, this.cache[category], filter);
+    if (this.filter && filteredProducts.length < 12)
+      this.getAllProductByCategory(category, this.cache[category][this.cache[category].length - 1].id);
     this.setProducts(filteredProducts);
   }
   @action
