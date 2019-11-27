@@ -18,7 +18,9 @@ type ListByCategoryProps = {
 
 const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)(
   observer(props => {
-    const { products, getAllProductByCategory, hasMoreProducts, filter, filterProduct } = props[STORES.PRODUCTS_STORE];
+    const { products, getAllProductByCategory, hasMoreProducts, filter, setFilter, filterProduct } = props[
+      STORES.PRODUCTS_STORE
+    ];
     const category = parseInt(props.match.params.category, 10);
     const countLastId = useRef<number[]>([]);
 
@@ -36,6 +38,7 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
 
     useEffect(() => {
       countLastId.current = [];
+      setFilter(undefined);
       getAllProductByCategory(category);
     }, [category]);
 
