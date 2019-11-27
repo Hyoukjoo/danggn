@@ -51,7 +51,7 @@ const ProductRegistration: React.FC<RegisterProps> = inject(STORES.PRODUCTS_STOR
       if (option || (CATEGORY_WITH_OPTION.includes(category) && !option)) {
         if (!option) return alert('추가 항목을 모두 입력해 주세요');
         for (let key in option) {
-          if (typeof option[key] === 'undefined') return alert(`추가 항목을 모두 입력해주세요`);
+          if (option[key] === undefined) return alert(`추가 항목을 모두 입력해주세요`);
         }
       }
 

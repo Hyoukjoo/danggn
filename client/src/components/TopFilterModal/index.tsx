@@ -14,7 +14,7 @@ interface I_props {
 }
 
 const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STORE)(
-  observer((props) => {
+  observer(props => {
     let { filter, setFilter } = props[STORES.PRODUCTS_STORE];
 
     const [startOld, setStartOld] = useState<number>((filter && filter.startOld) || 2010);
@@ -22,7 +22,7 @@ const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
     const [startMileage, setStartMileage] = useState<number>((filter && filter.startMileage) || 0);
     const [endMileage, setEndMileage] = useState<number>((filter && filter.endMileage) || 10000);
     const [isSmoker, setIsSmoker] = useState<boolean | undefined>(
-      !filter ? undefined : typeof filter.isSmoker === 'undefined' ? undefined : filter.isSmoker,
+      !filter ? undefined : filter.isSmoker === undefined ? undefined : filter.isSmoker,
     );
 
     const onChangeStartOld = (event: FormEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
 
     const onChangeCheckSmokeRadio = (event: FormEvent<HTMLInputElement>) => {
       const is = event.currentTarget.value === 'true';
-      if (typeof isSmoker !== 'undefined' && isSmoker === is) setIsSmoker(undefined);
+      if (isSmoker !== undefined && isSmoker === is) setIsSmoker(undefined);
       else setIsSmoker(is);
     };
 
@@ -58,13 +58,7 @@ const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
     const onSumbitFilter = () => {
       props.showFilterModal();
 
-      if (
-        startOld === 2010 &&
-        endOld === 2020 &&
-        startMileage === 0 &&
-        endMileage === 10000 &&
-        typeof isSmoker === 'undefined'
-      )
+      if (startOld === 2010 && endOld === 2020 && startMileage === 0 && endMileage === 10000 && isSmoker === undefined)
         return setFilter(undefined);
 
       let filterOptions = { startOld, endOld, startMileage, endMileage, isSmoker };
@@ -156,7 +150,7 @@ const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
                     name="checkSmokeRadio"
                     value="true"
                     onClick={onChangeCheckSmokeRadio}
-                    checked={typeof isSmoker === 'undefined' ? false : isSmoker}
+                    checked={isSmoker === undefined ? false : isSmoker}
                     readOnly
                   />
                   <label htmlFor="smokeTrue">흡연</label>
@@ -168,7 +162,7 @@ const TopFilterModal: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
                     name="checkSmokeRadio"
                     value="false"
                     onClick={onChangeCheckSmokeRadio}
-                    checked={typeof isSmoker === 'undefined' ? false : !isSmoker}
+                    checked={isSmoker === undefined ? false : !isSmoker}
                     readOnly
                   />
                   <label htmlFor="smokeFalse">비흡연</label>

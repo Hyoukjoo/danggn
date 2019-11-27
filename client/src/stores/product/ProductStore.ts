@@ -62,7 +62,6 @@ class ProductsStore {
       if (this.cache[category][0].id !== response.data.data[0].id) {
         const newProducts = this.cache[category] ? this.cache[category].concat(response.data.data) : response.data.data;
         const filteredProducts = this.filter ? filterProductsHelper(category, newProducts, this.filter) : newProducts;
-
         this.cache[category] = newProducts;
         this.setProducts(filteredProducts);
       }
@@ -75,6 +74,7 @@ class ProductsStore {
 
   @action
   async registrationProduct(product: ProductRegistrationDto) {
+    this.currentCategory = 486;
     try {
       const result = await this.productService.registration(product);
       alert(result.data.msg);
@@ -87,8 +87,8 @@ class ProductsStore {
   filterProduct(category: number, filter: I_Filter | undefined) {
     if (!filter) return this.cache[category] && this.setProducts(this.cache[category]);
     const filteredProducts = filterProductsHelper(category, this.cache[category], filter);
-    if (this.filter && filteredProducts.length < 12)
-      this.getAllProductByCategory(category, this.cache[category][this.cache[category].length - 1].id);
+    // if (this.filter && filteredProducts.length < 12)
+    //   this.getAllProductByCategory(category, this.cache[category][this.cache[category].length - 1].id);
     this.setProducts(filteredProducts);
   }
 

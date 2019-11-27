@@ -6,7 +6,6 @@ import { inject, observer } from 'mobx-react';
 import FixedTopBar from '~components/FixedTopBar';
 import Footer from '~components/Footer';
 import CategoryBar from '~components/CategoryBar';
-import FilterBar from '~components/FilterBar';
 import Product from '~pages/ProductList/Product';
 
 import ProductsStore from '~stores/product/ProductStore';
@@ -33,7 +32,7 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
           }
         }
       }
-    }, [category, products.length, hasMoreProducts]);
+    }, [category, products, hasMoreProducts]);
 
     useEffect(() => {
       countLastId.current = [];
@@ -45,12 +44,12 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
     }, [category, filter]);
 
     useEffect(() => {
-      if (!products.length) return;
+      if (!products) return;
       window.addEventListener('scroll', onScroll);
       return () => {
         window.removeEventListener('scroll', onScroll);
       };
-    }, [products.length]);
+    }, [category, products, hasMoreProducts]);
 
     return (
       <>
@@ -63,13 +62,14 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
           {/* <FilterBar category={category} /> */}
 
           <ul className="list-products row">
-            {products.map(v => (
-              <li key={v.id} className="list-products-item col-12 col-md-4 col-lg-3">
-                <Link to={`${PAGE_PATHS.PRODUCT}/${v.id}`}>
-                  <Product product={v} />
-                </Link>
-              </li>
-            ))}
+            {products &&
+              products.map(v => (
+                <li key={v.id} className="list-products-item col-12 col-md-4 col-lg-3">
+                  <Link to={`${PAGE_PATHS.PRODUCT}/${v.id}`}>
+                    <Product product={v} />
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
         <Footer />
