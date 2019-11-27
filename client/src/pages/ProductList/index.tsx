@@ -41,7 +41,7 @@ const ProductList: React.FC<InjectedProps> = inject(STORES.PRODUCTS_STORE)(
       return () => {
         window.removeEventListener('scroll', onScroll);
       };
-    }, [products.length]);
+    }, [products.length, hasMoreProducts]);
 
     return (
       <>

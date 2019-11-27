@@ -31,6 +31,7 @@ class ProductsStore {
     }
     if (this.products.length > 0 && this.products[0].id === response.data.data[0].id) return;
     this.hasMoreProducts = response.data.data.length === 12;
+    if (this.products.length > 0 && this.products[0].id === response.data.data[1].id) return this.setProducts(response.data.data);
     this.setProducts(this.products.concat(response.data.data));
   }
 
