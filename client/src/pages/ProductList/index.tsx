@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
@@ -17,19 +17,22 @@ type InjectedProps = {
 const ProductList: React.FC<InjectedProps> = inject(STORES.PRODUCTS_STORE)(
   observer(props => {
     const { products, getAllProducts, hasMoreProducts } = props[STORES.PRODUCTS_STORE];
-    const count: number[] = [];
+    const countLastId = useRef<number[]>([]);
 
     const onScroll = useCallback(() => {
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         if (hasMoreProducts) {
           const lastId = products[products.length - 1].id;
-          if (!count.includes(lastId)) getAllProducts(lastId);
-          count.push(lastId);
+          if (!countLastId.current.includes(lastId)) {
+            getAllProducts(lastId);
+            countLastId.current.push(lastId);
+          }
         }
       }
     }, [products.length, hasMoreProducts]);
 
     useEffect(() => {
+      countLastId.current = [];
       getAllProducts();
     }, []);
 

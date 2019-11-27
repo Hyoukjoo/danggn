@@ -91,6 +91,7 @@ class ProductsStore {
       this.getAllProductByCategory(category, this.cache[category][this.cache[category].length - 1].id);
     this.setProducts(filteredProducts);
   }
+
   @action
   sortProduct(category: number, filter: I_filter[] | undefined) {
     if (!filter) return this.setProducts(this.cache[category]);

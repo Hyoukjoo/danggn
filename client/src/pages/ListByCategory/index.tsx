@@ -27,9 +27,11 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
       if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
         const lastId = products[products.length - 1].id;
         if (hasMoreProducts) {
-          if (!countLastId.current.includes(lastId)) getAllProductByCategory(category, lastId);
+          if (!countLastId.current.includes(lastId)) {
+            getAllProductByCategory(category, lastId);
+            countLastId.current.push(lastId);
+          }
         }
-        countLastId.current.push(lastId);
       }
     }, [category, products.length, hasMoreProducts]);
 
@@ -58,7 +60,7 @@ const ListByCategory: React.FC<ListByCategoryProps> = inject(STORES.PRODUCTS_STO
 
           <CategoryBar />
 
-          <FilterBar category={category} />
+          {/* <FilterBar category={category} /> */}
 
           <ul className="list-products row">
             {products.map(v => (
